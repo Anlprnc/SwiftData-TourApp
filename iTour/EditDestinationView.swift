@@ -10,6 +10,7 @@ import SwiftData
 
 struct EditDestinationView: View {
     @Bindable var destination: Destination
+    @State private var newSigthName = ""
     
     var body: some View {
         Form {
@@ -25,9 +26,31 @@ struct EditDestinationView: View {
                 }
                 .pickerStyle(.segmented)
             }
+            
+            Section("Sights") {
+                ForEach(destination.sights) { sight in
+                    Text(sight.name)
+                }
+                
+                HStack {
+                    TextField("Add a new sight in \(destination.name)", text: $newSigthName)
+                    
+                    Button("Add", action: addSight)
+                }
+            }
         }
         .navigationTitle("Edit Destination")
         .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    func addSight() {
+        guard newSigthName.isEmpty == false else { return }
+        
+        withAnimation {
+            let sight = Sight(name: newSigthName)
+            destination.sights.append(sight)
+            newSigthName = ""
+        }
     }
 }
 
